@@ -8,6 +8,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Unzip project
+        run: unzip -q TVScan.zip
+
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -17,8 +20,9 @@ jobs:
         with:
           gradle-version: 8.7
 
-      # Optional API keys come from repo Settings > Secrets and variables > Actions
-      - run: >
+      - name: Build APK
+        working-directory: TVScan
+        run: >
           gradle assembleDebug
           -PVT_API_KEY="${{ secrets.VT_API_KEY }}"
           -PMB_API_KEY="${{ secrets.MB_API_KEY }}"
@@ -27,11 +31,4 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: TVScan-apk
-          path: app/build/outputs/apk/debug/app-debug.apk
-build.gradle.kts
-settings.gradle.kts
-gradle.properties
-app/build.gradle.kts
-app/src/main/AndroidManifest.xml
-app/src/main/java/com/example/tvscan/MainActivity.kt
-app/src/main/java/com/example/tvscan/Scanner.kt
+          path: TVScan/app/build/outputs/apk/debug/app-debug.apk
